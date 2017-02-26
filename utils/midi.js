@@ -4,17 +4,20 @@ var handlers
 
 module.exports = function (_handlers) {
   handlers = _handlers
+  handlers.stream = stream
   stream.on('data', function(data){
+
+    console.log(data, data[1], handlers)
     // [type, key, value]
     // 144: noteOn, 128: noteOff, 176: knobChange
     handlers[data[1]](data)
-    console.log(data, data[1], handlers)
   })
 
   return {
     stream: stream,
     update: function (_handlers) {
       handlers = _handlers
+      handlers.stream = stream
     }
   }
 }

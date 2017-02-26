@@ -28,6 +28,7 @@ MAP THING so you can turn keyboard input into mpk version!
 
 pads turn loops on and off
 which also adds/removes gifs from background
+ALSO gated loops...
 
 
 knobs fiddle some good good FX paramaters

@@ -15,6 +15,16 @@
 
 
 
+console.log('AC SLATER')
+var ac = new AudioContext()// || window.webkitAudioContext)();
 
-var ac = new (window.AudioContext || window.webkitAudioContext)();
+// var scenes = [
+//   require('./scenes/organs')
+// ]
 require('./scenes/organs')(ac, require('./utils/midi'))
+
+
+
+
+
+
