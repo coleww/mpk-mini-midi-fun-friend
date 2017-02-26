@@ -1,18 +1,41 @@
 {
-  "name": "mpk-mini-midi-handler",
+  "name": "blzrs",
+  "private": "true",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "test": "standard && node test.js",
-    "publish": "npm run test"
+    "publish": "npm run test",
+    "build": "browserify -g uglifyify index.js -o www/bundle.js",
+    "watch": "watchify index.js -o www/bundle.js --debug --verbose",
+    "livereload": "livereloadify ./www",
+    "serve": "serve ./www"
   },
   "license": "MIT",
   "description": "mpk-mini-midi-handler ----------------",
   "author": "Cole Willsea <coleww@gmail.com> (http://colewillsea.com/)",
   "devDependencies": {
+    "@coleww/openmusic-sample-player": "^1.0.2",
+    "a-d-s-r": "^1.0.2",
+    "browserify": "^13.1.0",
+    "freeverb": "^1.1.2",
     "install": "^0.8.1",
+    "livereloadify": "^2.0.0",
+    "load-sample-2-buff": "^1.0.1",
+    "make-distortion-curve": "^1.0.0",
+    "midiutils": "0.0.4",
     "npm": "^3.10.8",
+    "serve": "^1.4.0",
+    "soundbank-reverb": "^1.1.2",
     "standard": "^8.4.0",
-    "tap": "^7.1.2"
+    "tap": "^7.1.2",
+    "tunajs": "^1.0.0",
+    "uglifyify": "^3.0.3",
+    "watchify": "^3.7.0",
+    "wobbler": "^1.0.0"
+  },
+  "dependencies": {
+    "web-midi": "^2.0.1",
+    "web-midi-devices": "^1.0.0"
   }
 }
