@@ -12,11 +12,19 @@ module.exports = function (ac, cb) {
   var handlers = {}
   var count = 0
   var total = 33
+  var loops = []
 
   function done (note, handler) {
     handlers[note] = handler
     if (++count === total) {
       console.log('calling back')
+      var time = ac.currentTime + 1
+      setTimeout(function () {
+
+        loops.forEach(function (loop) {
+          loop.start(time)
+        })
+      }, 500)
       cb(handlers)
 
       // blinking
@@ -32,15 +40,16 @@ module.exports = function (ac, cb) {
     addKnobHandler(ac, note, fx, done)
   }
   for (var note = 48; note <= 72; note++) {
-    addSampleHandler(ac, note, destination, handlers, done)
+    addSampleHandler(ac, note, ac.destination, handlers, false, done)
   }
   for (var note = 32; note <= 39; note++) {
-    addSampleHandler(ac, note, destination, handlers, done)
+    var startLoop = addSampleHandler(ac, note, ac.destination, handlers, true, done)
+    loops.push(startLoop)
   }
 }
 //
-function addSampleHandler (ac, note, destination, handlers, cb) {
-  samplePlayer(ac, `/samples/organs/${note}.ogg`, note, destination, handlers, cb)
+function addSampleHandler (ac, note, destination, handlers, isLoop, cb) {
+  return samplePlayer(ac, `/samples/organs/${note}.ogg`, note, destination, handlers, isLoop, cb)
 }
 
 function addKnobHandler (ac, note, fx, cb) {
@@ -72,10 +81,10 @@ function addKnobHandler (ac, note, fx, cb) {
 function wireUpFx (ac, fx) {
 
   // console.log(fx.reverb.connect(ac.destination))
-  fx.overdrive.connect(fx.reverb)
-  fx.reverb.connect(fx.moog.input)
-  // fx.moog.connect(fx.delay.input)
-  fx.moog.connect(ac.destination)
-  // fx.delay.connect(ac.destination)
-  return fx.overdrive
+  // fx.overdrive.connect(fx.reverb)
+  // fx.reverb.connect(fx.moog.input)
+  // // fx.moog.connect(fx.delay.input)
+  // fx.moog.connect(ac.destination)
+  // // fx.delay.connect(ac.destination)
+  // return fx.overdrive
 }
