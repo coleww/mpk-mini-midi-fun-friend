@@ -6,7 +6,7 @@ var samplePlayer = require('../utils/samplePlayer')
 
 var buildFx = require('../utils/fx')
 var valueMap = require("value-map");
-module.exports = function (ac, cb) {
+module.exports = function (ac, path, cb) {
   var fx = buildFx(ac)
   var destination = wireUpFx(ac, fx)
   var handlers = {}
@@ -40,16 +40,16 @@ module.exports = function (ac, cb) {
     addKnobHandler(ac, note, fx, done)
   }
   for (var note = 48; note <= 72; note++) {
-    addSampleHandler(ac, note, ac.destination, handlers, false, done)
+    addSampleHandler(ac, note, ac.destination, handlers, false, path, done)
   }
   for (var note = 32; note <= 39; note++) {
-    var startLoop = addSampleHandler(ac, note, ac.destination, handlers, true, done)
+    var startLoop = addSampleHandler(ac, note, ac.destination, handlers, true, path, done)
     loops.push(startLoop)
   }
 }
 //
-function addSampleHandler (ac, note, destination, handlers, isLoop, cb) {
-  return samplePlayer(ac, `/samples/organs/${note}.ogg`, note, destination, handlers, isLoop, cb)
+function addSampleHandler (ac, note, destination, handlers, isLoop, path, cb) {
+  return samplePlayer(ac, `/samples/${path}/${note}.ogg`, note, destination, handlers, isLoop, cb)
 }
 
 function addKnobHandler (ac, note, fx, cb) {
