@@ -1,5 +1,6 @@
 var loadSample2Buff = require('load-sample-2-buff')
 var SamplePlayer = require('openmusic-sample-player')
+var valueMap = require("value-map")
 var ZERO = 0.00001
 var ATTACK = 0.0015
 var DECAY = 0.015
@@ -26,47 +27,52 @@ module.exports = function (ac, path, note, destination, handlers, isLoop, cb) {
       playerB.connect(gain)
       playerB.start(ac.currentTime + (buffer.duration / 2))
     }
-    cb(note, function (data) {
-      if (data[0] === 144) {
-        // noteOn
-        if (note >= 48 && note <= 72) {
-          // it's a key! ramp it up
-          gain.gain.linearRampToValueAtTime(PEAK, ac.currentTime + ATTACK)
-          isOn = true
-        } else if (note >= 32 && note <= 39) {
-          // it's a sample/loop, toggle it on or off
-          if (isOn) {
-            handlers.stream.write([128, note, 127])
+    if (cb) {
+      cb(note, function (data) {
+        if (data[0] === 144) {
+          // noteOn
+          if (note >= 48 && note <= 72) {
+            // it's a key! ramp it up
+            gain.gain.linearRampToValueAtTime(PEAK, ac.currentTime + ATTACK)
+            isOn = true
+          } else if (note >= 32 && note <= 39) {
+            // it's a sample/loop, toggle it on or off
+            if (isOn) {
+              handlers.stream.write([128, note, 127])
+              gain.gain.linearRampToValueAtTime(ZERO, ac.currentTime + DECAY)
+              isOn = false
+            } else {
+              handlers.stream.write([144, note, 127])
+              gain.gain.linearRampToValueAtTime(PAD_PEAK, ac.currentTime + ATTACK)
+              isOn = true
+            }
+          } else {
+            console.log('wut wut', data)
+          }
+        } else if (data[0] === 128) {
+          // noteOff
+          if (note >= 48 && note <= 72) {
             gain.gain.linearRampToValueAtTime(ZERO, ac.currentTime + DECAY)
             isOn = false
+          } else if (note >= 32 && note <= 39) {
+            var noteType = isOn ? 144 : 128
+            handlers.stream.write([noteType, note, 127])
           } else {
-            handlers.stream.write([144, note, 127])
-            gain.gain.linearRampToValueAtTime(PAD_PEAK, ac.currentTime + ATTACK)
-            isOn = true
+            console.log('wut wut', data)
           }
         } else {
           console.log('wut wut', data)
         }
-      } else if (data[0] === 128) {
-        // noteOff
-        if (note >= 48 && note <= 72) {
-          gain.gain.linearRampToValueAtTime(ZERO, ac.currentTime + DECAY)
-          isOn = false
-        } else if (note >= 32 && note <= 39) {
-          var noteType = isOn ? 144 : 128
-          handlers.stream.write([noteType, note, 127])
-        } else {
-          console.log('wut wut', data)
-        }
-      } else {
-        console.log('wut wut', data)
-      }
-    })
+      })
+    }
   })
 
   return {
     start: function (time) {
       playerA.start(time)
+    },
+    change: function (value, time) {
+      gain.gain.linearRampToValueAtTime(valueMap(value, 0, 127, 0, 0.6), time)
     }
   }
 }
