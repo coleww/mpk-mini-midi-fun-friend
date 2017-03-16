@@ -31,6 +31,7 @@
     "tap": "^7.1.2",
     "tunajs": "^1.0.0",
     "uglifyify": "^3.0.3",
+    "value-map": "0.0.1",
     "watchify": "^3.7.0",
     "wobbler": "^1.0.0"
   },

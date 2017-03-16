@@ -4,6 +4,10 @@ mpk-mini-midi-handler
 TODO:
 ...
 
+handle multiple devices (find usb splitter i guess?)
+start all loops simultaneously!
+
+
 !!!!!!!!
 accept an opts thingy that maps midi numbers to samples?
 ALSO
